@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+  <style>
+    /* Centers the button for a clean mobile look */
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; margin: 0; font-family: sans-serif; }
+    .upload-btn { background-color: #ff4500; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <button id="upload_widget" class="upload-btn">Upload Video</button>
+
+  <script type="text/javascript">
+    // 1. Grab the Event ID from the Adalo Web View URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const adaloEventID = urlParams.get('eventID');
+
+    // 2. Configure the Cloudinary Widget
+    var myWidget = cloudinary.createUploadWidget({
+      cloudName: 'yown65ru',
+      uploadPreset: 'jollofpics_videos',
+      clientAllowedFormats: ['mp4', 'mov', 'avi'],
+      maxFileSize: 500000000 // Sets limit to 500MB
+    }, (error, result) => {
+      
+      // 3. When upload succeeds, send data to Make.com
+      if (!error && result && result.event === "success") {
+        
+        // Changes button text so the guest knows it worked
+        document.getElementById("upload_widget").innerText = "Upload Successful!";
+        
+        fetch('https://hook.eu1.make.com/qn5bhha1gicvtofc2567nuddfdl7vmax', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            video_url: result.info.secure_url,
+            event_id: adaloEventID
+          })
+        });
+      }
+    });
+
+    document.getElementById("upload_widget").addEventListener("click", function(){
+        myWidget.open();
+      }, false);
+  </script>
+
+</body>
+</html>
