@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.65">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px Times; font-kerning: none; -webkit-text-stroke: 0px #000000}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Centers the button for a clean mobile look */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; margin: 0; font-family: sans-serif; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.upload-btn { background-color: #ff4500; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button id="upload_widget" class="upload-btn"&gt;Upload Video&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script type="text/javascript"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// 1. Grab the Event ID from the Adalo Web View URL</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const urlParams = new URLSearchParams(window.location.search);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const adaloEventID = urlParams.get('eventID');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// 2. Configure the Cloudinary Widget</p>
+<p class="p1"><span class="Apple-converted-space">    </span>var myWidget = cloudinary.createUploadWidget({</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cloudName: '<span class="s1">jollofpics_videos</span>',<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>uploadPreset: 'YOUR_UNSIGNED_PRESET_HERE',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>clientAllowedFormats: ['mp4', 'mov', 'avi'],</p>
+<p class="p1"><span class="Apple-converted-space">      </span>maxFileSize: 500000000 // Sets limit to 500MB</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}, (error, result) =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// 3. When upload succeeds, send data to Make.com</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!error &amp;&amp; result &amp;&amp; result.event === "success") {</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Changes button text so the guest knows it worked</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("upload_widget").innerText = "Upload Successful!";</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>fetch('https://hook.eu1.make.com/qn5bhha1gicvtofc2567nuddfdl7vmax', {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">          </span>headers: { 'Content-Type': 'application/json' },</p>
+<p class="p1"><span class="Apple-converted-space">          </span>body: JSON.stringify({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>video_url: result.info.secure_url,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>event_id: adaloEventID</p>
+<p class="p1"><span class="Apple-converted-space">          </span>})</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("upload_widget").addEventListener("click", function(){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>myWidget.open();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, false);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
