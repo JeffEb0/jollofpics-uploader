@@ -5,13 +5,12 @@
   <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
   <style>
     body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; margin: 0; font-family: sans-serif; }
-    .upload-btn { background-color: #ff4500; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+    .upload-btn { background-color: #ff4500; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
   </style>
 </head>
 <body>
 
-  <!-- If the button says this, we know GitHub updated successfully! -->
-  <button id="upload_widget" class="upload-btn">Upload Test Video</button>
+  <button id="upload_widget" class="upload-btn">Upload Video</button>
 
   <script type="text/javascript">
     const urlParams = new URLSearchParams(window.location.search);
@@ -25,16 +24,28 @@
     }, (error, result) => {
       
       if (!error && result && result.event === "success") {
-        document.getElementById("upload_widget").innerText = "Upload Successful!";
         
+        const btn = document.getElementById("upload_widget");
+        
+        // 1. Show Success State
+        btn.innerText = "Upload Successful! 🎉";
+        btn.style.backgroundColor = "#28a745"; // Green
+        
+        // 2. Send to Make.com (with fallback if tested outside Adalo)
         fetch('https://hook.eu1.make.com/qn5bhha1gicvtofc2567nuddfdl7vmax', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             video_url: result.info.secure_url,
-            event_id: adaloEventID
+            event_id: adaloEventID || "test_id_from_github"
           })
         });
+
+        // 3. Reset Button After 3 Seconds
+        setTimeout(() => {
+          btn.innerText = "Upload Another Video";
+          btn.style.backgroundColor = "#ff4500"; // Back to Orange
+        }, 3000);
       }
     });
 
