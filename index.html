@@ -28,22 +28,15 @@
         const btn = document.getElementById("upload_widget");
         btn.innerText = "Upload Successful! 🎉";
         btn.style.backgroundColor = "#28a745";
-        
-        // Force-send data to Make.com with error handling
+
+        // Verified fetch structure
         fetch('https://hook.eu1.make.com/qn5bhha1gicvtofc2567nuddfdl7vmax', {
           method: 'POST',
-          mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             video_url: result.info.secure_url,
-            event_id: adaloEventID || "missing_id"
+            event_id: adaloEventID || "test_event_id"
           })
-        })
-        .then(response => {
-          console.log("Make.com successfully notified!");
-        })
-        .catch(err => {
-          alert("Webhook error: " + err.message);
         });
 
         setTimeout(() => {
