@@ -26,25 +26,29 @@
       if (!error && result && result.event === "success") {
         
         const btn = document.getElementById("upload_widget");
-        
-        // 1. Show Success State
         btn.innerText = "Upload Successful! 🎉";
-        btn.style.backgroundColor = "#28a745"; // Green
+        btn.style.backgroundColor = "#28a745";
         
-        // 2. Send to Make.com (with fallback if tested outside Adalo)
+        // Force-send data to Make.com with error handling
         fetch('https://hook.eu1.make.com/qn5bhha1gicvtofc2567nuddfdl7vmax', {
           method: 'POST',
+          mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             video_url: result.info.secure_url,
-            event_id: adaloEventID || "test_id_from_github"
+            event_id: adaloEventID || "missing_id"
           })
+        })
+        .then(response => {
+          console.log("Make.com successfully notified!");
+        })
+        .catch(err => {
+          alert("Webhook error: " + err.message);
         });
 
-        // 3. Reset Button After 3 Seconds
         setTimeout(() => {
           btn.innerText = "Upload Another Video";
-          btn.style.backgroundColor = "#ff4500"; // Back to Orange
+          btn.style.backgroundColor = "#ff4500";
         }, 3000);
       }
     });
